@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"os/signal"
+	"strings"
 )
 
 func init() {
@@ -11,7 +12,10 @@ func init() {
 
 		signal.Notify(ch, os.Interrupt, os.Kill)
 
-		<-ch
+		if s := <-ch; *flagVerbose {
+			printf("%s SIGNAL RECEIVED", strings.ToUpper(s.String()))
+		}
+
 		exit()
 	}()
 }

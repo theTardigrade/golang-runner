@@ -77,12 +77,21 @@ func run(path string) {
 		printf("RUNNING COMMAND [%s]", *flagCommand)
 	}
 
-	if err := cmd.Run(); err != nil {
-		if *flagLog {
-			logFile.WriteString(err.Error())
+	err := cmd.Run()
+	if *flagLog && err != nil {
+		logFile.WriteString(err.Error())
+	}
+
+	if *flagVerbose {
+		var s string
+
+		if err == nil {
+			s = "SUCCESS"
+		} else {
+			s = "FAILURE"
 		}
-	} else if *flagVerbose {
-		printf("COMPLETED COMMAND [%s]", *flagCommand)
+
+		printf("COMPLETED COMMAND [%s] (%s)", *flagCommand, s)
 	}
 
 	stopMutex.Lock()
