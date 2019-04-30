@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 const (
@@ -36,4 +37,14 @@ func gobin() (value string) {
 	}
 
 	return
+}
+
+func validatePath(path string) bool {
+	name := filepath.Base(path)
+
+	if strings.HasPrefix(name, pathHiddenNamePrefix) || strings.HasSuffix(name, pathHiddenNameSuffix) {
+		return false
+	}
+
+	return true
 }

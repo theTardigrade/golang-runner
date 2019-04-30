@@ -118,7 +118,7 @@ func list() {
 	for _, f := range files {
 		name := f.Name()
 
-		if strings.HasPrefix(name, pathHiddenNamePrefix) || strings.HasSuffix(name, pathHiddenNameSuffix) {
+		if !validatePath(name) {
 			continue
 		}
 
@@ -164,6 +164,10 @@ func command() {
 
 	if !info.Mode().IsRegular() {
 		panic(errCommandNotRegularFile)
+	}
+
+	if !validatePath(path) {
+		panic(errCommandNotValidated)
 	}
 
 	for i, j := *flagIterations, 1; ; j++ {
