@@ -142,7 +142,7 @@ func list(path string) {
 	printf(b.String(), l)
 
 	for _, name := range names {
-		printf("\t[%s]", name)
+		printf("%s[%s]", fourSpaces, name)
 	}
 }
 
