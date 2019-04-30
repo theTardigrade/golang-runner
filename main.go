@@ -148,14 +148,6 @@ func command(path string) {
 		panic(errCommandNotRegularFile)
 	}
 
-	if !isWindows {
-		result, err := exec.Command(filepath.Join(basePath, "isExecutable.sh"), path).Output()
-		checkErr(err)
-		if len(result) == 0 {
-			panic(errCommandNotExecutable)
-		}
-	}
-
 	for i, j := *flagIterations, 1; ; j++ {
 		run(path)
 		if i > 0 && j == i {
