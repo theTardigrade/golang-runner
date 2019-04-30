@@ -48,15 +48,7 @@ func closeLogFile() {
 	}
 }
 
-var (
-	cleanedLogFiles bool
-)
-
 func cleanLogFiles() {
-	if cleanedLogFiles {
-		return
-	}
-
 	pattern := filepath.Join(os.TempDir(), strings.Replace(logFilePattern, logFilePatternTimestampVariableName, "[0-9]*", 1))
 
 	matches, err := filepath.Glob(pattern)
