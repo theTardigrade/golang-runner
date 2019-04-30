@@ -81,7 +81,6 @@ func run(path string) {
 		if err != nil {
 			logFile.WriteString(err.Error())
 		}
-
 		closeLogFile()
 	}
 
