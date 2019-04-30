@@ -16,7 +16,8 @@ var (
 
 const (
 	logFilePatternTimestampVariableName = "$TIMESTAMP"
-	logFilePattern                      = "runner-" + logFilePatternTimestampVariableName + "-x-*.log"
+	logFileExt                          = ".log"
+	logFilePattern                      = "runner-" + logFilePatternTimestampVariableName + "-x-*" + logFileExt
 )
 
 func openLogFile() {
@@ -49,7 +50,9 @@ func closeLogFile() {
 }
 
 func cleanLogFiles() {
-	pattern := filepath.Join(os.TempDir(), strings.Replace(logFilePattern, logFilePatternTimestampVariableName, "[0-9]*", 1))
+	pattern := strings.Replace(logFilePattern, logFilePatternTimestampVariableName, "[0-9]*", 1)
+	pattern = strings.Replace(pattern, "*"+logFileExt, "[0-9]*"+logFileExt, 1)
+	pattern = filepath.Join(os.TempDir(), pattern)
 
 	matches, err := filepath.Glob(pattern)
 	checkErr(err)
