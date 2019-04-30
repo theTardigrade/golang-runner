@@ -32,13 +32,13 @@ func init() {
 	flagIterations = flag.Int("iterations", -1, "maximum number of iterations; a negative value will loop infinitely")
 	flagList = flag.Bool("list", false, "list all possible commands")
 	flagLog = flag.Bool("log", false, "write errors to a temporary log file")
-	flagSleep = flag.Duration("sleep", time.Nanosecond, "duration to sleep in between rerunning the command")
+	flagSleep = flag.Duration("sleep", minSleepDuration, "duration to sleep in between rerunning the command")
 	flagVerbose = flag.Bool("verbose", false, "provide a greater level of output")
 
 	flag.Parse()
 
-	if *flagSleep < time.Nanosecond {
-		*flagSleep = time.Nanosecond
+	if *flagSleep < minSleepDuration {
+		*flagSleep = minSleepDuration
 	}
 
 	if *flagArguments != "" {
