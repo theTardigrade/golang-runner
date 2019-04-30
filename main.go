@@ -57,7 +57,6 @@ func run(path string) {
 
 	if *flagLog {
 		openLogFile()
-		defer closeLogFile()
 	}
 
 	stopMutex.Lock()
@@ -78,8 +77,12 @@ func run(path string) {
 	}
 
 	err := cmd.Run()
-	if *flagLog && err != nil {
-		logFile.WriteString(err.Error())
+	if *flagLog {
+		if err != nil {
+			logFile.WriteString(err.Error())
+		}
+
+		closeLogFile()
 	}
 
 	if *flagVerbose {
