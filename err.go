@@ -12,3 +12,11 @@ func checkErr(err error) {
 		panic(err)
 	}
 }
+
+func judgeErr(err error) string {
+	if err == nil {
+		return "SUCCESS"
+	}
+
+	return "FAILURE"
+}

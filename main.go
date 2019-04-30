@@ -83,15 +83,7 @@ func run(path string) {
 	}
 
 	if *flagVerbose {
-		var s string
-
-		if err == nil {
-			s = "SUCCESS"
-		} else {
-			s = "FAILURE"
-		}
-
-		printf("COMPLETED COMMAND [%s] (%s)", *flagCommand, s)
+		printf("COMPLETED COMMAND [%s] (%s)", *flagCommand, judgeErr(err))
 	}
 
 	stopMutex.Lock()
