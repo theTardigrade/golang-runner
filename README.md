@@ -1,6 +1,6 @@
 # runner
 
-Allows commands from the Golang bin directory to be run indefinitely, or for a given number of iterations, whilst keeping a log of any errors.
+Allows commands from the Golang bin directory to be run indefinitely, or for a given number of iterations, while storing a log of any errors in the temporary directory.
 
 ## example
 
