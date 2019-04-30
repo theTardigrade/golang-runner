@@ -2,10 +2,15 @@ package main
 
 import (
 	"fmt"
+	"strings"
+)
+
+var (
+	fourSpaces = strings.Repeat(" ", 4)
 )
 
 func print(s string) {
-	fmt.Println("**\t" + s)
+	fmt.Printf("%s[%d]%s%s\n", fourSpaces, unixMilli(), fourSpaces, s)
 }
 
 func printf(pattern string, s ...interface{}) {

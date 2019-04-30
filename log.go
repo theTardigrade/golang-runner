@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"math"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -21,7 +20,7 @@ const (
 )
 
 func openLogFile() {
-	timestamp := strconv.FormatInt(int64(math.Round(float64(time.Now().UTC().UnixNano())/1e6)), 10) // milliseconds
+	timestamp := strconv.FormatInt(unixMilli(), 10)
 
 	closeLogFile()
 
