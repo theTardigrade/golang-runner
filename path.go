@@ -1,9 +1,8 @@
 package main
 
 import (
+	"os"
 	"path/filepath"
-
-	"github.com/theTardigrade/envStore"
 )
 
 const (
@@ -13,19 +12,15 @@ const (
 )
 
 func gobin() (value string) {
-	env, err := envStore.New(envStore.Config{
-		FromSystem: true,
-	})
-	checkErr(err)
+	value, found := os.LookupEnv("GOBIN")
 
-	value, err = env.Get("GOBIN")
-	if err != envStore.ErrKeyNotFound {
-		checkErr(err)
+	if !found {
+		value, found = os.LookupEnv("GOPATH")
+		if !found {
+			panic(errGobinNotFound)
+		}
+		value = filepath.Join(value, "bin")
 	}
-
-	value, err = env.Get("GOPATH")
-	checkErr(err)
-	value = filepath.Join(value, "bin")
 
 	return
 }

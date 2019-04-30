@@ -164,10 +164,6 @@ func main() {
 		path = filepath.Join(path, *flagCommand)
 
 		if _, err := os.Stat(path); os.IsNotExist(err) {
-			if !isWindows {
-				panic(errCommandNotFound)
-			}
-
 			path += pathWindowsNameSuffix
 
 			if _, err := os.Stat(path); os.IsNotExist(err) {
