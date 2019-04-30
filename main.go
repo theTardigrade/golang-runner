@@ -122,7 +122,7 @@ func list() {
 			continue
 		}
 
-		if isWindows {
+		if strings.HasSuffix(name, pathWindowsNameSuffix) {
 			name = strings.TrimSuffix(name, pathWindowsNameSuffix)
 		}
 
