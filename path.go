@@ -13,12 +13,15 @@ const (
 )
 
 var (
-	basePath string
+	basePath  string
+	gobinPath string
 )
 
 func init() {
 	_, basePath, _, _ = runtime.Caller(0)
 	basePath = filepath.Dir(basePath)
+
+	gobinPath = gobin()
 }
 
 func gobin() (value string) {

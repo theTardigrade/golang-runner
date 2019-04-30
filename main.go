@@ -109,8 +109,8 @@ func run(path string) {
 	stopMutex.Unlock()
 }
 
-func list(path string) {
-	files, err := ioutil.ReadDir(path)
+func list() {
+	files, err := ioutil.ReadDir(gobinPath)
 	checkErr(err)
 
 	var names []string
@@ -146,12 +146,12 @@ func list(path string) {
 	}
 }
 
-func command(path string) {
+func command() {
 	if *flagIterations == 0 {
 		panic(errZeroIterations)
 	}
 
-	path = filepath.Join(path, *flagCommand)
+	path := filepath.Join(gobinPath, *flagCommand)
 
 	info, err := os.Stat(path)
 	if os.IsNotExist(err) {
@@ -200,14 +200,12 @@ func main() {
 		daemon()
 	}
 
-	path := gobin()
-
 	if *flagList {
-		list(path)
+		list()
 	}
 
 	if *flagCommand != "" {
-		command(path)
+		command()
 	}
 
 	exit()
