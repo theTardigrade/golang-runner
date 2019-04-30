@@ -9,7 +9,6 @@ import (
 var (
 	flagArguments  *string
 	flagClean      *bool
-	flagColor      *bool
 	flagCommand    *string
 	flagIterations *int
 	flagList       *bool
@@ -23,7 +22,6 @@ var (
 func init() {
 	flagArguments = flag.String("args", "", "arguments to be supplied to command")
 	flagClean = flag.Bool("clean", false, "remove old temporary files")
-	flagColor = flag.Bool("color", true, "colorize output")
 	flagCommand = flag.String("command", "", "name of command to execute")
 	flagIterations = flag.Int("iterations", -1, "maximum number of iterations; a negative value will loop infinitely")
 	flagList = flag.Bool("list", false, "list all possible commands")
