@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -19,6 +20,21 @@ var (
 	ctx        context.Context
 	cancelFunc context.CancelFunc
 )
+
+func daemon() {
+	var args []string
+
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name != "daemon" {
+			args = append(args, "-"+f.Name+"="+f.Value.String())
+		}
+	})
+
+	cmd := exec.Command(os.Args[0], args...)
+	checkErr(cmd.Start())
+
+	os.Exit(0)
+}
 
 func stop() {
 	defer stopMutex.Unlock()
@@ -180,6 +196,10 @@ func exit() {
 }
 
 func main() {
+	if *flagDaemon {
+		daemon()
+	}
+
 	path := gobin()
 
 	if *flagList {
