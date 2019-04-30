@@ -51,7 +51,6 @@ func closeLogFile() {
 
 func cleanLogFiles() {
 	pattern := strings.Replace(logFilePattern, logFilePatternTimestampVariableName, "[0-9]*", 1)
-	pattern = strings.Replace(pattern, "*"+logFileExt, "[0-9]*"+logFileExt, 1)
 	pattern = filepath.Join(os.TempDir(), pattern)
 
 	matches, err := filepath.Glob(pattern)
