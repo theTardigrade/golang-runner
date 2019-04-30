@@ -35,11 +35,22 @@ func stop() {
 }
 
 func run(path string) {
-	exitMutex.Lock()
-	if exited {
+	exitChan := make(chan struct{})
+
+	func(c chan<- struct{}) {
+		defer exitMutex.Unlock()
+		exitMutex.Lock()
+
+		if exited {
+			c <- struct{}{}
+		}
+	}(exitChan)
+
+	select {
+	case <-exitChan:
 		return
+	default: // no-op
 	}
-	exitMutex.Unlock()
 
 	defer runMutex.Unlock()
 	runMutex.Lock()
