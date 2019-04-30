@@ -18,8 +18,8 @@ var (
 )
 
 func init() {
-	_, basePath, _, _ = runtime.Caller(0)
-	basePath = filepath.Dir(basePath)
+	_, path, _, _ := runtime.Caller(0)
+	basePath = filepath.Dir(path)
 
 	gobinPath = gobin()
 }
