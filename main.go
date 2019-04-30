@@ -181,12 +181,11 @@ func command() {
 
 func exit() {
 	exitMutex.Lock()
+	runMutex.Lock()
 
 	exited = true
 
 	stop()
-
-	runMutex.Lock()
 
 	if *flagLog {
 		closeLogFile()
