@@ -126,7 +126,43 @@ func list(path string) {
 	for _, name := range names {
 		printf("\t[%s]", name)
 	}
+}
 
+func command(path string) {
+	if *flagIterations == 0 {
+		panic(errZeroIterations)
+	}
+
+	path = filepath.Join(path, *flagCommand)
+
+	info, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		path += pathWindowsNameSuffix
+
+		if info, err = os.Stat(path); os.IsNotExist(err) {
+			panic(errCommandNotFound)
+		}
+	}
+
+	if !info.Mode().IsRegular() {
+		panic(errCommandNotRegularFile)
+	}
+
+	if !isWindows {
+		result, err := exec.Command(filepath.Join(basePath, "isExecutable.sh"), path).Output()
+		checkErr(err)
+		if len(result) == 0 {
+			panic(errCommandNotExecutable)
+		}
+	}
+
+	for i, j := *flagIterations, 1; ; j++ {
+		run(path)
+		if i > 0 && j == i {
+			break
+		}
+		time.Sleep(*flagSleep)
+	}
 }
 
 func exit() {
@@ -157,27 +193,7 @@ func main() {
 	}
 
 	if *flagCommand != "" {
-		if *flagIterations == 0 {
-			panic(errZeroIterations)
-		}
-
-		path = filepath.Join(path, *flagCommand)
-
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			path += pathWindowsNameSuffix
-
-			if _, err := os.Stat(path); os.IsNotExist(err) {
-				panic(errCommandNotFound)
-			}
-		}
-
-		for i, j := *flagIterations, 1; ; j++ {
-			run(path)
-			if i > 0 && j == i {
-				break
-			}
-			time.Sleep(*flagSleep)
-		}
+		command(path)
 	}
 
 	exit()

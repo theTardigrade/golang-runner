@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
 const (
@@ -10,6 +11,15 @@ const (
 	pathHiddenNameSuffix  = "~"
 	pathHiddenNamePrefix  = "."
 )
+
+var (
+	basePath string
+)
+
+func init() {
+	_, basePath, _, _ = runtime.Caller(0)
+	basePath = filepath.Dir(basePath)
+}
 
 func gobin() (value string) {
 	value, found := os.LookupEnv("GOBIN")
