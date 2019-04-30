@@ -61,6 +61,4 @@ func cleanLogFiles() {
 			printf("DELETED FILE [%s]", m)
 		}
 	}
-
-	cleanedLogFiles = true
 }
