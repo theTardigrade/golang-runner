@@ -19,8 +19,8 @@ func init() {
 	}
 }
 
-func print(s string) {
-	fmt.Printf("%s[%d]%s%s\n", fourSpaces, unixMilli(), fourSpaces, s)
+func print(s ...string) {
+	fmt.Printf("%s[%d]%s%s\n", fourSpaces, unixMilli(), fourSpaces, strings.Join(s, " "))
 }
 
 func printf(pattern string, s ...interface{}) {
