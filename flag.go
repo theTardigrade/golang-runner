@@ -20,6 +20,10 @@ var (
 	arguments []string
 )
 
+const (
+	minSleepDuration = time.Nanosecond
+)
+
 func init() {
 	flagArguments = flag.String("args", "", "arguments to be supplied to command")
 	flagClean = flag.Bool("clean", false, "remove old temporary files")

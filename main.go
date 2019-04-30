@@ -129,17 +129,19 @@ func list() {
 		names = append(names, name)
 	}
 
-	var b strings.Builder
-	l := len(names)
+	{
+		var b strings.Builder
+		l := len(names)
 
-	_, err = b.WriteString("FOUND %d COMMANDS")
-	checkErr(err)
+		_, err = b.WriteString("FOUND %d COMMANDS")
+		checkErr(err)
 
-	if l > 0 {
-		checkErr(b.WriteByte(':'))
+		if l > 0 {
+			checkErr(b.WriteByte(':'))
+		}
+
+		printf(b.String(), l)
 	}
-
-	printf(b.String(), l)
 
 	for _, name := range names {
 		printf("%s[%s]", fourSpaces, name)
