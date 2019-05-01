@@ -27,7 +27,7 @@ const (
 
 func init() {
 	flagArguments = flag.String("args", "", "arguments to be supplied to command")
-	flagClean = flag.Bool("clean", false, "remove any temporary files that were created")
+	flagClean = flag.Bool("clean", false, "remove any temporary files that were created by the current invocation of the program")
 	flagCleanAll = flag.Bool("clean-all", false, "remove any temporary files that are found, including those created by past invocations of the program")
 	flagCommand = flag.String("command", "", "name of command to execute")
 	flagDaemon = flag.Bool("daemon", false, "run as a daemon")
