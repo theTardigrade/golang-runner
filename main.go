@@ -36,6 +36,45 @@ func daemon() {
 	os.Exit(0)
 }
 
+func list() {
+	files, err := ioutil.ReadDir(gobinPath)
+	checkErr(err)
+
+	var names []string
+
+	for _, f := range files {
+		name := f.Name()
+
+		if isPathHidden(name) {
+			continue
+		}
+
+		if strings.HasSuffix(name, pathWindowsNameSuffix) {
+			name = strings.TrimSuffix(name, pathWindowsNameSuffix)
+		}
+
+		names = append(names, name)
+	}
+
+	{
+		var b strings.Builder
+		l := len(names)
+
+		_, err = b.WriteString("FOUND %d COMMANDS")
+		checkErr(err)
+
+		if l > 0 {
+			checkErr(b.WriteByte(':'))
+		}
+
+		printf(b.String(), l)
+	}
+
+	for _, name := range names {
+		printf("%s[%s]", fourSpaces, name)
+	}
+}
+
 func stop() {
 	defer stopMutex.Unlock()
 	stopMutex.Lock()
@@ -107,45 +146,6 @@ func run(path string) {
 	stopMutex.Lock()
 	ctx, cancelFunc = nil, nil
 	stopMutex.Unlock()
-}
-
-func list() {
-	files, err := ioutil.ReadDir(gobinPath)
-	checkErr(err)
-
-	var names []string
-
-	for _, f := range files {
-		name := f.Name()
-
-		if isPathHidden(name) {
-			continue
-		}
-
-		if strings.HasSuffix(name, pathWindowsNameSuffix) {
-			name = strings.TrimSuffix(name, pathWindowsNameSuffix)
-		}
-
-		names = append(names, name)
-	}
-
-	{
-		var b strings.Builder
-		l := len(names)
-
-		_, err = b.WriteString("FOUND %d COMMANDS")
-		checkErr(err)
-
-		if l > 0 {
-			checkErr(b.WriteByte(':'))
-		}
-
-		printf(b.String(), l)
-	}
-
-	for _, name := range names {
-		printf("%s[%s]", fourSpaces, name)
-	}
 }
 
 func command() {
