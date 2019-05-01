@@ -118,7 +118,7 @@ func list() {
 	for _, f := range files {
 		name := f.Name()
 
-		if !validatePath(name) {
+		if !isPathHidden(name) {
 			continue
 		}
 
@@ -168,8 +168,8 @@ func command() {
 		panic(errCommandNotRegularFile)
 	}
 
-	if !validatePath(path) {
-		panic(errCommandNotValidated)
+	if !isPathHidden(path) {
+		panic(errCommandHiddenFile)
 	}
 
 	for i, j := *flagIterations, 1; ; j++ {

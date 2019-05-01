@@ -42,12 +42,12 @@ func gobin() (value string) {
 	return
 }
 
-func validatePath(path string) bool {
+func isPathHidden(path string) bool {
 	name := filepath.Base(path)
 
 	if strings.HasPrefix(name, pathHiddenNamePrefix) || strings.HasSuffix(name, pathHiddenNameSuffix) {
-		return false
+		return true
 	}
 
-	return true
+	return false
 }
