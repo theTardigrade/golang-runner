@@ -19,7 +19,10 @@ var (
 )
 
 func init() {
-	_, path, _, _ := runtime.Caller(0)
+	_, path, _, ok := runtime.Caller(0)
+	if !ok {
+		panic(errBasePathNotRecovered)
+	}
 	basePath = filepath.Dir(path)
 
 	gobinPath = gobin()
