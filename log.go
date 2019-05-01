@@ -11,7 +11,8 @@ import (
 )
 
 var (
-	logFile *os.File
+	logFile      *os.File
+	logFilePaths []string
 )
 
 const (
@@ -29,6 +30,12 @@ func openLogFile() {
 	logFile, err = ioutil.TempFile("", strings.Replace(logFilePattern, logFilePatternTimestampVariableName, timestamp, 1))
 	checkErr(err)
 
+	logFilePath := logFile.Name()
+
+	if *flagClean {
+		logFilePaths = append(logFilePaths, logFilePath)
+	}
+
 	_, err = logFile.WriteString(
 		fmt.Sprintf(
 			"DATE: %s%sCOMMAND: %s%sARGUMENTS: %s%s%s",
@@ -38,7 +45,7 @@ func openLogFile() {
 	checkErr(err)
 
 	if *flagVerbose {
-		printf("CREATED FILE [%s]", logFile.Name())
+		printf("CREATED FILE [%s]", logFilePath)
 	}
 }
 
@@ -49,7 +56,23 @@ func closeLogFile() {
 	}
 }
 
+func cleanLogFile(path string) {
+	checkErr(os.Remove(path))
+
+	if *flagVerbose {
+		printf("DELETED FILE [%s]", path)
+	}
+}
+
 func cleanLogFiles() {
+	for _, p := range logFilePaths {
+		cleanLogFile(p)
+	}
+
+	logFilePaths = []string{}
+}
+
+func cleanAllLogFiles() {
 	pattern := strings.Replace(logFilePattern, logFilePatternTimestampVariableName, "[0-9]*", 1)
 	pattern = filepath.Join(os.TempDir(), pattern)
 
@@ -57,10 +80,6 @@ func cleanLogFiles() {
 	checkErr(err)
 
 	for _, m := range matches {
-		checkErr(os.Remove(m))
-
-		if *flagVerbose {
-			printf("DELETED FILE [%s]", m)
-		}
+		cleanLogFile(m)
 	}
 }

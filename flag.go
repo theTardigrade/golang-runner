@@ -9,6 +9,7 @@ import (
 var (
 	flagArguments  *string
 	flagClean      *bool
+	flagCleanAll   *bool
 	flagCommand    *string
 	flagDaemon     *bool
 	flagIterations *int
@@ -26,7 +27,8 @@ const (
 
 func init() {
 	flagArguments = flag.String("args", "", "arguments to be supplied to command")
-	flagClean = flag.Bool("clean", false, "remove old temporary files")
+	flagClean = flag.Bool("clean", false, "remove any temporary files that were created")
+	flagCleanAll = flag.Bool("clean-all", false, "remove any temporary files that are found, including those created by past invocations of the program")
 	flagCommand = flag.String("command", "", "name of command to execute")
 	flagDaemon = flag.Bool("daemon", false, "run as a daemon")
 	flagIterations = flag.Int("iterations", -1, "maximum number of iterations; a negative value will loop infinitely")

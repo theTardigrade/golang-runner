@@ -193,7 +193,9 @@ func exit() {
 		closeLogFile()
 	}
 
-	if *flagClean {
+	if *flagCleanAll {
+		cleanAllLogFiles()
+	} else if *flagClean {
 		cleanLogFiles()
 	}
 
