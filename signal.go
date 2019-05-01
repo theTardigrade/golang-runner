@@ -7,15 +7,18 @@ import (
 )
 
 func init() {
-	go func() {
-		ch := make(chan os.Signal, 1)
+	go watchSignals()
+}
 
-		signal.Notify(ch, os.Interrupt, os.Kill)
+// runs in own goroutine
+func watchSignals() {
+	ch := make(chan os.Signal, 1)
 
-		if s := <-ch; *flagVerbose {
-			printf("%s SIGNAL RECEIVED", strings.ToUpper(s.String()))
-		}
+	signal.Notify(ch, os.Interrupt, os.Kill)
 
-		exit()
-	}()
+	if s := <-ch; *flagVerbose {
+		printf("%s SIGNAL RECEIVED", strings.ToUpper(s.String()))
+	}
+
+	exit()
 }
