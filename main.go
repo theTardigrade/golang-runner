@@ -90,6 +90,9 @@ func stop() {
 }
 
 func run(path string) {
+	defer runMutex.Unlock()
+	runMutex.Lock()
+
 	exitChan := make(chan struct{})
 
 	func(c chan<- struct{}) {
@@ -106,9 +109,6 @@ func run(path string) {
 		return
 	default: // no-op
 	}
-
-	defer runMutex.Unlock()
-	runMutex.Lock()
 
 	if *flagLog {
 		openLogFile()
