@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -36,17 +35,43 @@ func openLogFile() {
 		logFilePaths = append(logFilePaths, logFilePath)
 	}
 
-	_, err = logFile.WriteString(
-		fmt.Sprintf(
-			"DATE: %s%sCOMMAND: %s%sARGUMENTS: %s%s%s",
-			time.Now().UTC().String(), newline, *flagCommand, newline, *flagArguments, newline, newline,
-		),
-	)
-	checkErr(err)
+	writeHeadersToLogFile()
 
 	if *flagVerbose {
 		printf("CREATED FILE [%s]", logFilePath)
 	}
+}
+
+func writeHeadersToLogFile() {
+	dateHeader := "DATE: " + time.Now().UTC().String()
+	commandHeader := "COMMAND: " + *flagCommand
+	argumentsHeader := "ARGUMENTS: " + *flagArguments
+	headers := []string{dateHeader, commandHeader, argumentsHeader}
+
+	var l int
+	for _, h := range headers {
+		if m := len(h); m > l {
+			l = m
+		}
+	}
+
+	border := strings.Repeat("*", l)
+
+	var builder strings.Builder
+
+	builder.WriteString(border)
+	builder.WriteString(newline)
+	for _, h := range headers {
+		builder.WriteString(h)
+		builder.WriteString(newline)
+	}
+	builder.WriteString(border)
+	for i := 2; i > 0; i-- {
+		builder.WriteString(newline)
+	}
+
+	_, err := logFile.WriteString(builder.String())
+	checkErr(err)
 }
 
 func closeLogFile() {
