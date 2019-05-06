@@ -10,6 +10,11 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	internalErrors "github.com/theTardigrade/runner/internal/errors"
+	internalFlag "github.com/theTardigrade/runner/internal/flag"
+	internalFmt "github.com/theTardigrade/runner/internal/fmt"
+	internalLog "github.com/theTardigrade/runner/internal/log"
 )
 
 var (
@@ -31,14 +36,14 @@ func daemon() {
 	})
 
 	cmd := exec.Command(os.Args[0], args...)
-	checkErr(cmd.Start())
+	internalErrors.Check(cmd.Start())
 
 	os.Exit(0)
 }
 
 func list() {
 	files, err := ioutil.ReadDir(gobinPath)
-	checkErr(err)
+	internalErrors.Check(err)
 
 	var names []string
 
@@ -61,17 +66,17 @@ func list() {
 		l := len(names)
 
 		_, err = b.WriteString("FOUND %d COMMANDS")
-		checkErr(err)
+		internalErrors.Check(err)
 
 		if l > 0 {
-			checkErr(b.WriteByte(':'))
+			internalErrors.Check(b.WriteByte(':'))
 		}
 
-		printf(b.String(), l)
+		internalFmt.Printf(b.String(), l)
 	}
 
 	for _, name := range names {
-		printf("%s[%s]", fourSpaces, name)
+		internalFmt.Printf("%s[%s]", internalFmt.FourSpaces, name)
 	}
 }
 
@@ -110,37 +115,38 @@ func run(path string) {
 	default: // no-op
 	}
 
-	if *flagLog {
-		openLogFile()
+	if *internalFlag.Log {
+		internalLog.Open()
 	}
 
 	stopMutex.Lock()
 	ctx, cancelFunc = context.WithCancel(context.Background())
-	cmd := exec.CommandContext(ctx, path, arguments...)
+	cmd := exec.CommandContext(ctx, path, internalFlag.SliceArguments...)
 	stopMutex.Unlock()
 
 	cmd.Stdout = os.Stdout
 
-	if *flagLog {
-		cmd.Stderr = logFile
+	if *internalFlag.Log {
+		internalLog.SetWriter(&cmd.Stderr)
 	} else {
 		cmd.Stderr = os.Stderr
 	}
 
-	if *flagVerbose {
-		printf("RUNNING COMMAND [%s]", *flagCommand)
+	if *internalFlag.Verbose {
+		internalFmt.Printf("RUNNING COMMAND [%s]", *internalFlag.Command)
 	}
 
 	err := cmd.Run()
-	if *flagLog {
+	if *internalFlag.Log {
 		if err != nil {
-			logFile.WriteString(err.Error())
+			internalLog.WriteString(err.Error())
 		}
-		closeLogFile()
+
+		internalLog.Close()
 	}
 
-	if *flagVerbose {
-		printf("COMPLETED COMMAND [%s] (%s)", *flagCommand, judgeErr(err))
+	if *internalFlag.Verbose {
+		internalFmt.Printf("COMPLETED COMMAND [%s] (%s)", *internalFlag.Command, internalErrors.Judge(err))
 	}
 
 	stopMutex.Lock()
@@ -149,11 +155,11 @@ func run(path string) {
 }
 
 func command() {
-	if *flagIterations == 0 {
+	if *internalFlag.Iterations == 0 {
 		panic(errZeroIterations)
 	}
 
-	path := filepath.Join(gobinPath, *flagCommand)
+	path := filepath.Join(gobinPath, *internalFlag.Command)
 
 	info, err := os.Stat(path)
 	if os.IsNotExist(err) {
@@ -172,12 +178,12 @@ func command() {
 		panic(errCommandHiddenFile)
 	}
 
-	for i, j := *flagIterations, 1; ; j++ {
+	for i, j := *internalFlag.Iterations, 1; ; j++ {
 		run(path)
 		if i > 0 && j == i {
 			break
 		}
-		time.Sleep(*flagSleep)
+		time.Sleep(*internalFlag.Sleep)
 	}
 }
 
@@ -189,29 +195,29 @@ func exit() {
 
 	stop()
 
-	if *flagLog {
-		closeLogFile()
+	if *internalFlag.Log {
+		internalLog.Close()
 	}
 
-	if *flagCleanAll {
-		cleanAllLogFiles()
-	} else if *flagClean {
-		cleanLogFiles()
+	if *internalFlag.CleanAll {
+		internalLog.CleanAll()
+	} else if *internalFlag.Clean {
+		internalLog.Clean()
 	}
 
 	os.Exit(0)
 }
 
 func main() {
-	if *flagDaemon {
+	if *internalFlag.Daemon {
 		daemon()
 	}
 
-	if *flagList {
+	if *internalFlag.List {
 		list()
 	}
 
-	if *flagCommand != "" {
+	if *internalFlag.Command != "" {
 		command()
 	}
 

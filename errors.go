@@ -11,17 +11,3 @@ var (
 	errGobinNotFound         = errors.New("GOBIN or GOPATH environment variable not set")
 	errBasePathNotRecovered  = errors.New("cannot recover the base path")
 )
-
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
-func judgeErr(err error) string {
-	if err == nil {
-		return "SUCCESS"
-	}
-
-	return "FAILURE"
-}
