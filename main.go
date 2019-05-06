@@ -15,6 +15,7 @@ import (
 	internalFlag "github.com/theTardigrade/runner/internal/flag"
 	internalFmt "github.com/theTardigrade/runner/internal/fmt"
 	internalLog "github.com/theTardigrade/runner/internal/log"
+	internalStrings "github.com/theTardigrade/runner/internal/strings"
 )
 
 var (
@@ -62,14 +63,13 @@ func list() {
 	}
 
 	{
-		var b strings.Builder
+		var b internalStrings.Builder
 		l := len(names)
 
-		_, err = b.WriteString("FOUND %d COMMANDS")
-		internalErrors.Check(err)
+		b.WriteString("FOUND %d COMMANDS")
 
 		if l > 0 {
-			internalErrors.Check(b.WriteByte(':'))
+			b.WriteByte(':')
 		}
 
 		internalFmt.Printf(b.String(), l)

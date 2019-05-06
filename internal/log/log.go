@@ -12,6 +12,7 @@ import (
 	internalErrors "github.com/theTardigrade/runner/internal/errors"
 	internalFlag "github.com/theTardigrade/runner/internal/flag"
 	internalFmt "github.com/theTardigrade/runner/internal/fmt"
+	internalStrings "github.com/theTardigrade/runner/internal/strings"
 	internalTime "github.com/theTardigrade/runner/internal/time"
 )
 
@@ -63,7 +64,7 @@ func writeHeaders() {
 
 	border := strings.Repeat("*", l)
 
-	var builder strings.Builder
+	var builder internalStrings.Builder
 
 	builder.WriteString(border)
 	builder.WriteString(internalFmt.Newline)
