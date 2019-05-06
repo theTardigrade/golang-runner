@@ -12,9 +12,15 @@ var (
 
 func init() {
 	if *internalFlag.Arguments != "" {
-		for _, a := range strings.Split(*internalFlag.Arguments, " ") {
-			if a != "" {
-				arguments = append(arguments, a)
+		splitArguments := strings.Split(*internalFlag.Arguments, " ")
+
+		if l := len(splitArguments); l > 0 {
+			arguments = make([]string, 0, l)
+
+			for i := 0; i < l; i++ {
+				if a := splitArguments[i]; a != "" {
+					arguments = append(arguments, a)
+				}
 			}
 		}
 	}
