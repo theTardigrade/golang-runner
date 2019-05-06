@@ -121,7 +121,7 @@ func run(path string) {
 
 	stopMutex.Lock()
 	ctx, cancelFunc = context.WithCancel(context.Background())
-	cmd := exec.CommandContext(ctx, path, internalFlag.SliceArguments...)
+	cmd := exec.CommandContext(ctx, path, arguments...)
 	stopMutex.Unlock()
 
 	cmd.Stdout = os.Stdout
