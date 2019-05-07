@@ -78,17 +78,6 @@ func list() {
 	}
 }
 
-func stop() {
-	if cancelFunc != nil {
-		cancelFunc()
-		cancelFunc = nil
-		if ctx != nil {
-			<-ctx.Done()
-			ctx = nil
-		}
-	}
-}
-
 func run(path string) {
 	defer mutex.Unlock()
 	mutex.Lock()
@@ -162,6 +151,17 @@ func command() {
 			break
 		}
 		time.Sleep(*internalFlag.Sleep)
+	}
+}
+
+func stop() {
+	if cancelFunc != nil {
+		cancelFunc()
+		cancelFunc = nil
+		if ctx != nil {
+			<-ctx.Done()
+			ctx = nil
+		}
 	}
 }
 
