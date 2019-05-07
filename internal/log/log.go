@@ -106,14 +106,17 @@ func cleanOneCurried(identifier string) func(string) {
 	}
 }
 
+var cleanOneCurrent = cleanOneCurried("CURRENT")
+
 func Clean() {
-	cleanOne := cleanOneCurried("CURRENT")
 	for _, p := range paths {
-		cleanOne(p)
+		cleanOneCurrent(p)
 	}
 
 	paths = []string{}
 }
+
+var cleanOnePrevious = cleanOneCurried("PREVIOUS")
 
 func CleanAll() {
 	Clean()
@@ -124,8 +127,7 @@ func CleanAll() {
 	matches, err := filepath.Glob(pattern)
 	internalErrors.Check(err)
 
-	cleanOne := cleanOneCurried("PREVIOUS")
 	for _, m := range matches {
-		cleanOne(m)
+		cleanOnePrevious(m)
 	}
 }
