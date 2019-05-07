@@ -22,7 +22,6 @@ var (
 	runMutex   sync.Mutex
 	stopMutex  sync.Mutex
 	exitMutex  sync.Mutex
-	exited     bool
 	ctx        context.Context
 	cancelFunc context.CancelFunc
 )
@@ -84,22 +83,7 @@ func run(path string) {
 	defer runMutex.Unlock()
 	runMutex.Lock()
 
-	exitChan := make(chan struct{})
-
-	func(c chan<- struct{}) {
-		defer exitMutex.Unlock()
-		exitMutex.Lock()
-
-		if exited {
-			c <- struct{}{}
-		}
-	}(exitChan)
-
-	select {
-	case <-exitChan:
-		return
-	default: // no-op
-	}
+	waitIfExiting()
 
 	if *internalFlag.Log {
 		internalLog.Open()
@@ -166,9 +150,10 @@ func command() {
 
 	for i, j := *internalFlag.Iterations, 1; ; j++ {
 		run(path)
-		if exited || i > 0 && j == i {
+		if i > 0 && j == i {
 			break
 		}
+		waitIfExiting()
 		time.Sleep(*internalFlag.Sleep)
 	}
 }
@@ -187,10 +172,14 @@ func stop() {
 	}
 }
 
+func waitIfExiting() {
+	exitMutex.Lock()
+	exitMutex.Unlock()
+}
+
 func exit() {
 	exitMutex.Lock()
 
-	exited = true
 	stop()
 
 	runMutex.Lock()
