@@ -19,9 +19,7 @@ import (
 )
 
 var (
-	runMutex   sync.Mutex
-	stopMutex  sync.Mutex
-	exitMutex  sync.Mutex
+	mutex      sync.Mutex
 	exited     bool
 	ctx        context.Context
 	cancelFunc context.CancelFunc
@@ -81,9 +79,6 @@ func list() {
 }
 
 func stop() {
-	defer stopMutex.Unlock()
-	stopMutex.Lock()
-
 	if cancelFunc != nil {
 		cancelFunc()
 		cancelFunc = nil
@@ -95,34 +90,19 @@ func stop() {
 }
 
 func run(path string) {
-	defer runMutex.Unlock()
-	runMutex.Lock()
+	defer mutex.Unlock()
+	mutex.Lock()
 
-	exitChan := make(chan struct{})
-
-	func(c chan<- struct{}) {
-		defer exitMutex.Unlock()
-		exitMutex.Lock()
-
-		if exited {
-			c <- struct{}{}
-		}
-	}(exitChan)
-
-	select {
-	case <-exitChan:
+	if exited {
 		return
-	default: // no-op
 	}
 
 	if *internalFlag.Log {
 		internalLog.Open()
 	}
 
-	stopMutex.Lock()
 	ctx, cancelFunc = context.WithCancel(context.Background())
 	cmd := exec.CommandContext(ctx, path, arguments...)
-	stopMutex.Unlock()
 
 	cmd.Stdout = os.Stdout
 
@@ -149,9 +129,7 @@ func run(path string) {
 		internalFmt.Printf("COMPLETED COMMAND [%s] (%s)", *internalFlag.Command, internalErrors.Judge(err))
 	}
 
-	stopMutex.Lock()
 	ctx, cancelFunc = nil, nil
-	stopMutex.Unlock()
 }
 
 func command() {
@@ -188,8 +166,7 @@ func command() {
 }
 
 func exit() {
-	exitMutex.Lock()
-	runMutex.Lock()
+	mutex.Lock()
 
 	exited = true
 
