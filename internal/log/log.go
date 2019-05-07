@@ -110,7 +110,7 @@ var cleanOneNew = cleanOneCurried("NEW")
 
 func Clean() {
 	for _, p := range paths {
-		cleanOneCurrent(p)
+		cleanOneNew(p)
 	}
 
 	paths = []string{}
@@ -128,6 +128,6 @@ func CleanAll() {
 	internalErrors.Check(err)
 
 	for _, m := range matches {
-		cleanOnePrevious(m)
+		cleanOneOld(m)
 	}
 }
