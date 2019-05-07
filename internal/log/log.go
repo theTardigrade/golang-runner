@@ -106,7 +106,7 @@ func cleanOneCurried(identifier string) func(string) {
 	}
 }
 
-var cleanOneCurrent = cleanOneCurried("CURRENT")
+var cleanOneNew = cleanOneCurried("NEW")
 
 func Clean() {
 	for _, p := range paths {
@@ -116,7 +116,7 @@ func Clean() {
 	paths = []string{}
 }
 
-var cleanOnePrevious = cleanOneCurried("PREVIOUS")
+var cleanOneOld = cleanOneCurried("OLD")
 
 func CleanAll() {
 	Clean()
