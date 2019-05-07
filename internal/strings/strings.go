@@ -8,16 +8,20 @@ import (
 
 type Builder strings.Builder
 
+func (b *Builder) Native() *strings.Builder {
+	return (*strings.Builder)(b)
+}
+
 func (b *Builder) WriteString(s string) {
-	_, err := (*strings.Builder)(b).WriteString(s)
+	_, err := b.Native().WriteString(s)
 	internalErrors.Check(err)
 }
 
 func (b *Builder) WriteByte(t byte) {
-	err := (*strings.Builder)(b).WriteByte(t)
+	err := b.Native().WriteByte(t)
 	internalErrors.Check(err)
 }
 
 func (b *Builder) String() string {
-	return (*strings.Builder)(b).String()
+	return b.Native().String()
 }
