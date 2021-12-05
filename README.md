@@ -2,10 +2,6 @@
 
 Allows commands from the Golang bin directory to be run indefinitely, or for a given number of iterations, while storing a log of any errors in the temporary directory.
 
-## Support
-
-Please consider donating at PayPal: [https://www.paypal.me/jismithpp](https://www.paypal.me/jismithpp)
-
 ## Example
 
 ```bash
